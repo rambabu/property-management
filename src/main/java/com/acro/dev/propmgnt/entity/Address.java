@@ -1,16 +1,21 @@
 package com.acro.dev.propmgnt.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Table(name= "address")
-public class Address {
-    private Long id;
+public class Address extends BaseEntity {
     private String lineOne;
     private String lineTwo;
     private String city;
     private String state;
     private int zipcode;
+    private AddressType type;
+    @ManyToOne
+    Tenant tenant;
+
 }

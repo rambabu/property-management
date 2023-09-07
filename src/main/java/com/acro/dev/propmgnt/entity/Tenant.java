@@ -1,24 +1,29 @@
 package com.acro.dev.propmgnt.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@Table(name= " tenant ")
-public class Tenant {
-    private Long id;
-    private Address addressId;
-    private Address workAddId;
-    private Address prevAddId;
+@Table(name= "tenant")
+public class Tenant extends BaseEntity{
+ //@OneToMany
+ //private List<Address> addresses;
+   // private Address workAddId;
+  //  private Address prevAddId;
     private int noOfPeople;
     private boolean isPrimary;
-    private Long ssn;
     private int pets;
     private boolean isInsured;
-    private Long profileId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    private Profile profile;
     private Long propertyId;
+
+
+
 
 
 
