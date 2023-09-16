@@ -1,7 +1,7 @@
-package com.acro.dev.propmgnt.Property.Management;
-
+package com.acro.dev.propmgnt;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 
 @SpringBootApplication
 public class PropertyManagementApplication {
