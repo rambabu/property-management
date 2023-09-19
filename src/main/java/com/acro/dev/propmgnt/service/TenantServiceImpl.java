@@ -1,8 +1,9 @@
 package com.acro.dev.propmgnt.service;
 
-import com.acro.dev.propmgnt.controller.TenantController;
+import com.acro.dev.propmgnt.advice.CommonExceptionHandler;
 import com.acro.dev.propmgnt.entity.Profile;
 import com.acro.dev.propmgnt.entity.Tenant;
+import com.acro.dev.propmgnt.exception.PropertyManagementException;
 import com.acro.dev.propmgnt.repository.TenantRepository;
 import com.acro.dev.propmgnt.request.TenantRequest;
 import com.acro.dev.propmgnt.response.TenantResponse;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class TenantServiceImpl implements TenantService {
-        private static final Logger LOGGER= LoggerFactory.getLogger(TenantController.class);
+        private static final Logger LOGGER= LoggerFactory.getLogger(CommonExceptionHandler.class);
 
         private final TenantRepository tenantRepository;
 
@@ -27,25 +28,22 @@ public class TenantServiceImpl implements TenantService {
 
         @Override
         public TenantResponse createTenant(TenantRequest tenantReq) {
-                LOGGER.info("Received request to Tenant");
-                // Convert request object to model entities
+                LOGGER.info("Received request from Tenant");
                 Tenant tenant = new Tenant();
                 Profile profile = new Profile();
-                profile.setFName(tenantReq.getFirstName());
+                profile.setFName(tenantReq.getFirstName());     // Convert request object to model entities
                 profile.setLName(tenantReq.getLastName());
                 profile.setEmail(tenantReq.getEmail());
                 profile.setPhoneNumber(tenantReq.getPhoneNumber());
                 profile.setSsn(tenantReq.getSsn());
                 tenant.setProfile(profile);
-                tenant.setPropertyId(tenantReq.getPropertyId());
-                // save model to DB
-                Tenant tenant1 = tenantRepository.save(tenant);
-                // convert model to response object
+               // tenant.setPropertyId(tenantReq.getPropertyId());
+                Tenant tenant1 = tenantRepository.save(tenant);   // save model to DB
                 LOGGER.info("Saved Successfully");
-                return getTenantResponse(tenant1);
+                return ConvertToResponse(tenant1);      // convert model to response object
         }
 
-        private  TenantResponse getTenantResponse(Tenant tenant1) {
+        private  TenantResponse ConvertToResponse(Tenant tenant1) {
                 TenantResponse tenantResponse = new TenantResponse();
                 tenantResponse.setTenantId(tenant1.getId());
                 tenantResponse.setProfileId(tenant1.getProfile().getId());
@@ -54,7 +52,7 @@ public class TenantServiceImpl implements TenantService {
                 tenantResponse.setEmail(tenant1.getProfile().getEmail());
                 tenantResponse.setSsn(tenant1.getProfile().getSsn());
                 tenantResponse.setPhoneNumber(tenant1.getProfile().getPhoneNumber());
-                tenantResponse.setPropertyId(tenant1.getPropertyId());
+               // tenantResponse.setPropertyId(tenant1.getPropertyId());
                 return tenantResponse;
         }
 
@@ -63,37 +61,32 @@ public class TenantServiceImpl implements TenantService {
                 // Check if tenant is present
                 Optional<Tenant> tenant = tenantRepository.findById(id);
                 if (tenant.isPresent()) {
-                        // set values from request to tenant model
-                        Tenant tenant1 = tenant.get();
+                        Tenant tenant1 = tenant.get();  // set values from request to tenant model
                         Profile profile = tenant1.getProfile();
                         profile.setFName(tenantReq.getFirstName());
                         profile.setLName(tenantReq.getLastName());
                         profile.setEmail(tenantReq.getEmail());
                         profile.setPhoneNumber(tenantReq.getPhoneNumber());
                         profile.setSsn(tenantReq.getSsn());
-                        tenant1.setPropertyId(tenantReq.getPropertyId());
-                        // call save to update the DB record
-                        Tenant tenant2 = tenantRepository.save(tenant1);
-                        // convert the result to response object
+                       // tenant1.setPropertyId(tenantReq.getPropertyId());
+                        Tenant tenant2 = tenantRepository.save(tenant1);         // call save to update the DB record
                         LOGGER.info("Updated Successfully");
-                        return getTenantResponse(tenant2);
+                        return ConvertToResponse(tenant2);       // convert the result to response object
                 }
-
-                return null;
+               throw new PropertyManagementException("Tenant not found");
         }
-
         @Override
         public TenantResponse getById(Long id) {
                 Optional<Tenant> tenant = tenantRepository.findById(id);
                 if (tenant.isPresent()) {
                         Tenant tenant1=tenant.get();
-                        return getTenantResponse(tenant1);
+                        return ConvertToResponse(tenant1);
                 }
-                return null;  // throw create not found exception
+                throw new PropertyManagementException("Tenant not found");
         }
         public List<TenantResponse> getAllTenantsByPropertyId(Long propertyId) {
                 List<Tenant> tenants = tenantRepository.findByPropertyId(propertyId);
-            return tenants.stream().map(t -> getTenantResponse(t)).collect(Collectors.toList());
+            return tenants.stream().map(t -> ConvertToResponse(t)).collect(Collectors.toList());
         }
         public boolean deleteTenantById(Long id) {
                 try {
@@ -105,8 +98,6 @@ public class TenantServiceImpl implements TenantService {
                 }
                 return false;
         }
-
-
 
 }
 
