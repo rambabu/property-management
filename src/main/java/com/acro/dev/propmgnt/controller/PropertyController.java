@@ -32,8 +32,8 @@ public class PropertyController {
                 return ResponseEntity.ok(propertyResponse);
             }
         }
-            LOGGER.info("Failed to Create");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        LOGGER.info("Failed to Create");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
     }
 
@@ -50,6 +50,7 @@ public class PropertyController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<PropertyResponse> findPropertyById(@PathVariable Long id) {
         PropertyResponse propertyResponse = propertyService.findPropertyById(id);
@@ -60,11 +61,16 @@ public class PropertyController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteOwnerById(@PathVariable Long id) {
-        boolean res = this.propertyService.deletePropertyById(id);
-        LOGGER.info("Property Deleted Successfully");
-        return ResponseEntity.ok(res);
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deletePropertyById(@PathVariable Long id) {
+        PropertyResponse propertyResponse = propertyService.findPropertyById(id);
+        if (propertyResponse != null) {
+            boolean res = this.propertyService.deletePropertyById(id);
+            LOGGER.info("Property Id Deleted Successfully");
+            return ResponseEntity.ok(res);
+
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

@@ -33,9 +33,9 @@ public class OwnerController {
                 return ResponseEntity.ok(ownerResponse);
             }
         }
-            LOGGER.error("Create Failed");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        LOGGER.error("Create Failed");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 
 
     @PutMapping("/{id}")
@@ -47,10 +47,11 @@ public class OwnerController {
                 return ResponseEntity.ok(ownerResponse);
             }
         }
-            LOGGER.error("Update Failed");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        LOGGER.error("Update Failed");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<OwnerResponse> findOwnerById(@PathVariable Long id) {
         OwnerResponse ownerResponse = ownerService.findOwnerById(id);
@@ -58,14 +59,18 @@ public class OwnerController {
             return ResponseEntity.ok(ownerResponse);
         }
         LOGGER.error("Invalid ownerId");
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteOwnerById(@PathVariable Long id) {
-        boolean res = this.ownerService.deleteOwnerById(id);
-        LOGGER.info("Owner Deleted Successfully");
-        return ResponseEntity.ok(res);
-    }
+        OwnerResponse ownerResponse = ownerService.findOwnerById(id);
+        if (ownerResponse != null) {
+            boolean res = this.ownerService.deleteOwnerById(id);
+            return ResponseEntity.ok(res);
+        }
+        //LOGGER.error("Failed to  delete Owner id {} ", ownerService.getId());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
+    }
 }
