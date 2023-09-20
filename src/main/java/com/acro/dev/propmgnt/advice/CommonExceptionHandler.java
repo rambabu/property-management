@@ -1,6 +1,5 @@
 package com.acro.dev.propmgnt.advice;
-
-import com.acro.dev.propmgnt.controller.OwnerController;
+import com.acro.dev.propmgnt.exception.PropertyManagementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -13,8 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class HandlingErrors {
-    private static final Logger LOGGER= LoggerFactory.getLogger(OwnerController.class);
+public class CommonExceptionHandler {
+    private static final Logger LOGGER= LoggerFactory.getLogger(CommonExceptionHandler.class);
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -28,9 +27,9 @@ public class HandlingErrors {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(PropertyManagementException.class)
     public Map<String, String> handleError(Exception e) {
-        LOGGER.error("Resource not found", e);  // logger
+        LOGGER.error("Resource not found", e);
         return Collections.emptyMap();
     }
 }

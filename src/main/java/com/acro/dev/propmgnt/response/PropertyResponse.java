@@ -1,5 +1,4 @@
 package com.acro.dev.propmgnt.response;
-
 import lombok.Data;
 
 @Data

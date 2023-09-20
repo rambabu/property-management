@@ -13,23 +13,14 @@ public class PropertyRequest {
     private Long propertyId;
     private Long addressId;
 
-
-
-   // private AddressRequest addressRequest;
-
     @NotNull
     int noOfBeds;
     @NotNull
     int noOfBaths;
-  //  @NotEmpty
     private String areaOfUnit;
-   // @NotEmpty
     private String hallDimension;
-    // @NotEmpty
     private String kitchenDimension;
-   // @NotEmpty
     private String bedRoomDimension;
-   // @NotEmpty
     private String garageDimension;
     @NotNull
     private double rent;

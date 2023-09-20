@@ -4,13 +4,14 @@ import com.acro.dev.propmgnt.controller.PropertyController;
 import com.acro.dev.propmgnt.entity.Address;
 import com.acro.dev.propmgnt.entity.Owner;
 import com.acro.dev.propmgnt.entity.Property;
+import com.acro.dev.propmgnt.exception.PropertyManagementException;
 import com.acro.dev.propmgnt.repository.AddressRepository;
 import com.acro.dev.propmgnt.repository.OwnerRepository;
 import com.acro.dev.propmgnt.repository.PropertyRepository;
 import com.acro.dev.propmgnt.request.AddressRequest;
 import com.acro.dev.propmgnt.request.PropertyRequest;
-import com.acro.dev.propmgnt.response.AddressResponse;
 import com.acro.dev.propmgnt.response.PropertyResponse;
+import com.acro.dev.propmgnt.responsemethod.CommonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +23,16 @@ public class PropertyServiceImpl implements PropertyService {
     private final PropertyRepository propertyRepository;
     private final OwnerRepository ownerRepository;
     private final AddressRepository addressRepository;
-
+    private final CommonResponse commonResponse;
 
     public PropertyServiceImpl(@Autowired PropertyRepository propertyRepository,
                                @Autowired OwnerRepository ownerRepository,
-                               @Autowired AddressRepository addressRepository) {
+                               @Autowired AddressRepository addressRepository,
+                               @Autowired CommonResponse commonResponse) {
         this.propertyRepository = propertyRepository;
         this.ownerRepository = ownerRepository;
         this.addressRepository = addressRepository;
+        this.commonResponse=commonResponse;
 
     }
 
@@ -68,44 +71,16 @@ public class PropertyServiceImpl implements PropertyService {
             Property propertyOne = propertyRepository.save(property);
             LOGGER.info("Owner address saved");
             LOGGER.info("Create property");
-            // return getAddressResponse(address);
-            return getPropertyResponse(propertyOne);
+            return commonResponse.getPropertyResponse(propertyOne);
 
 
         } else {
-            return null;
+            throw new PropertyManagementException("Property not created");
         }
 
     }
 
 
-    public PropertyResponse getPropertyResponse(Property property) {
-        PropertyResponse propertyResponse = new PropertyResponse();
-        propertyResponse.setPropertyId(property.getId());
-        propertyResponse.setOwnerId(property.getOwner().getId());
-        propertyResponse.setAddressId(property.getAddress().getId());
-        propertyResponse.setAreaOfUnit(property.getAreaOfUnit());
-        propertyResponse.setNoOfBeds(property.getNoOfBeds());
-        propertyResponse.setNoOfBaths(property.getNoOfBaths());
-        propertyResponse.setBedRoomDimension(property.getBedRoomDimension());
-        propertyResponse.setKitchenDimension(property.getKitchenDimension());
-        propertyResponse.setHallDimension(property.getHallDimension());
-        propertyResponse.setGarageDimension(property.getGarageDimension());
-        propertyResponse.setRent(property.getRent());
-        return propertyResponse;
-    }
-
-    public AddressResponse getAddressResponse(Address address) {
-        AddressResponse addressResponse = new AddressResponse();
-        addressResponse.setAddressId(address.getId());
-        addressResponse.setLineOne(address.getLineOne());
-        addressResponse.setLineTwo(address.getLineTwo());
-        addressResponse.setCity(address.getCity());
-        addressResponse.setState(address.getState());
-        addressResponse.setZipcode(address.getZipcode());
-        addressResponse.setType(address.getType());
-        return addressResponse;
-    }
 
     @Override
     public PropertyResponse updateProperty(Long id, PropertyRequest propertyRequest) {
@@ -122,9 +97,9 @@ public class PropertyServiceImpl implements PropertyService {
 
             Property updatedProperty = propertyRepository.save(existingProperty);
             LOGGER.info("Property Updated Successfully");
-            return getPropertyResponse(updatedProperty);
+            return commonResponse.getPropertyResponse(updatedProperty);
         }
-        return null;
+        throw new PropertyManagementException("Property not found");
     }
 
 
@@ -133,23 +108,22 @@ public class PropertyServiceImpl implements PropertyService {
         Optional<Property> property = propertyRepository.findById(id);
         if (property.isPresent()) {
             Property propertyOne = property.get();
-            return getPropertyResponse(propertyOne);
+            return commonResponse.getPropertyResponse(propertyOne);
         }
-        return null;
+        throw new PropertyManagementException("Property not found");
     }
 
-   /* @Override
-    public List<PropertyResponse> getPropertyByOwnerId(Long id) {
-        return null;
-    }*/
 
     @Override
     public boolean deletePropertyById(Long id) {
+        Optional<Property>property=propertyRepository.findById(id);
         try {
-            propertyRepository.findById(id);
-            return true;
+            if( property.isPresent()){
+                Property propertyOne=property.get();
+                return true;
+            }
         } catch (Exception e) {
-            LOGGER.error("Failed to delete");
+            LOGGER.error("Failed to delete Property Id");
         }
         return false;
     }

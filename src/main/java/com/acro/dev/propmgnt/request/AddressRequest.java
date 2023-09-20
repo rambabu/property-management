@@ -1,5 +1,4 @@
 package com.acro.dev.propmgnt.request;
-
 import com.acro.dev.propmgnt.entity.AddressType;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

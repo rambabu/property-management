@@ -1,5 +1,4 @@
 package com.acro.dev.propmgnt.response;
-
 import com.acro.dev.propmgnt.entity.AddressType;
 import lombok.Data;
 

@@ -1,5 +1,4 @@
 package com.acro.dev.propmgnt.entity;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -14,9 +13,5 @@ public class PropertyManager {
     String managerName;
     String managerPhoneNumber;
     String managerEmail;
-   /* @OneToMany(mappedBy = "propertyManager")
-    private List<Owner> owners;
-    @OneToMany(mappedBy = "propertyManager")
-    List<Repair> repairs;*/
-}
+  }
 
