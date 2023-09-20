@@ -15,7 +15,7 @@ public class AddressRequest {
 
     @NotEmpty
     private String lineOne;
-    @NotEmpty
+
     private String lineTwo;
     @NotEmpty
     private String city;

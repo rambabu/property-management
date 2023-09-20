@@ -2,13 +2,11 @@ package com.acro.dev.propmgnt.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.List;
 
 @Entity
-@EqualsAndHashCode(callSuper=false)
 @Data
 @Table(name="owner")
 public class Owner extends BaseEntity {
