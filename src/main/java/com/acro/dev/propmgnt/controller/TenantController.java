@@ -1,6 +1,5 @@
 package com.acro.dev.propmgnt.controller;
 
-import com.acro.dev.propmgnt.advice.CommonExceptionHandler;
 import com.acro.dev.propmgnt.exception.PropertyManagementException;
 import com.acro.dev.propmgnt.request.TenantRequest;
 import com.acro.dev.propmgnt.response.TenantResponse;
@@ -20,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tenant")
 public class TenantController {
-    private static final Logger LOGGER= LoggerFactory.getLogger(CommonExceptionHandler.class);
+    private static final Logger LOGGER= LoggerFactory.getLogger(TenantController.class);
 
     private final TenantService tenantService;
 

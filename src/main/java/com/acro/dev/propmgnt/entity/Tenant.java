@@ -13,14 +13,17 @@ public class Tenant extends BaseEntity{
  //private List<Address> addresses;
    // private Address workAddId;
   //  private Address prevAddId;
-    private int noOfPeople;
-    private boolean isPrimary;
-    private int pets;
-    private boolean isInsured;
-    @OneToOne(cascade = CascadeType.ALL)
+ private boolean isPrimary;
+
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id", referencedColumnName = "id")
     private Profile profile;
-    private Long propertyId;
+   @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+   @JoinColumn(name = "property_id", referencedColumnName = "id")
+    private Property property;
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name="lease_id",referencedColumnName = "id")
+    private LeaseDetails lease;
 
 
 

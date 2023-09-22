@@ -1,6 +1,6 @@
 package com.acro.dev.propmgnt.service;
 
-import com.acro.dev.propmgnt.advice.CommonExceptionHandler;
+import com.acro.dev.propmgnt.CommonResponseMapper;
 import com.acro.dev.propmgnt.entity.Profile;
 import com.acro.dev.propmgnt.entity.Tenant;
 import com.acro.dev.propmgnt.exception.PropertyManagementException;
@@ -18,17 +18,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class TenantServiceImpl implements TenantService {
-        private static final Logger LOGGER= LoggerFactory.getLogger(CommonExceptionHandler.class);
+        private static final Logger LOGGER= LoggerFactory.getLogger(TenantServiceImpl.class);
 
         private final TenantRepository tenantRepository;
+        private final CommonResponseMapper commonResponseMapper;
 
-        public TenantServiceImpl(@Autowired TenantRepository tenantRepository) {
+        public TenantServiceImpl(@Autowired TenantRepository tenantRepository, CommonResponseMapper commonResponseMapper1) {
                 this.tenantRepository = tenantRepository;
+                this.commonResponseMapper = commonResponseMapper1;
         }
 
         @Override
         public TenantResponse createTenant(TenantRequest tenantReq) {
-                LOGGER.info("Received request from Tenant");
+                LOGGER.info("Received tenant request {}", tenantReq);
                 Tenant tenant = new Tenant();
                 Profile profile = new Profile();
                 profile.setFName(tenantReq.getFirstName());     // Convert request object to model entities
@@ -40,20 +42,7 @@ public class TenantServiceImpl implements TenantService {
                // tenant.setPropertyId(tenantReq.getPropertyId());
                 Tenant tenant1 = tenantRepository.save(tenant);   // save model to DB
                 LOGGER.info("Saved Successfully");
-                return ConvertToResponse(tenant1);      // convert model to response object
-        }
-
-        private  TenantResponse ConvertToResponse(Tenant tenant1) {
-                TenantResponse tenantResponse = new TenantResponse();
-                tenantResponse.setTenantId(tenant1.getId());
-                tenantResponse.setProfileId(tenant1.getProfile().getId());
-                tenantResponse.setFName(tenant1.getProfile().getFName());
-                tenantResponse.setLName(tenant1.getProfile().getLName());
-                tenantResponse.setEmail(tenant1.getProfile().getEmail());
-                tenantResponse.setSsn(tenant1.getProfile().getSsn());
-                tenantResponse.setPhoneNumber(tenant1.getProfile().getPhoneNumber());
-               // tenantResponse.setPropertyId(tenant1.getPropertyId());
-                return tenantResponse;
+                return commonResponseMapper.convertToTenantResponse(tenant1);      // convert model to response object
         }
 
         @Override
@@ -70,34 +59,43 @@ public class TenantServiceImpl implements TenantService {
                         profile.setSsn(tenantReq.getSsn());
                        // tenant1.setPropertyId(tenantReq.getPropertyId());
                         Tenant tenant2 = tenantRepository.save(tenant1);         // call save to update the DB record
-                        LOGGER.info("Updated Successfully");
-                        return ConvertToResponse(tenant2);       // convert the result to response object
+                        LOGGER.info("Tenant updated Successfully {}", tenant2);
+                        return commonResponseMapper.convertToTenantResponse(tenant2);      // convert the result to response object
                 }
                throw new PropertyManagementException("Tenant not found");
         }
+
+
         @Override
         public TenantResponse getById(Long id) {
                 Optional<Tenant> tenant = tenantRepository.findById(id);
                 if (tenant.isPresent()) {
                         Tenant tenant1=tenant.get();
-                        return ConvertToResponse(tenant1);
+                        return commonResponseMapper.convertToTenantResponse(tenant1);
                 }
                 throw new PropertyManagementException("Tenant not found");
         }
         public List<TenantResponse> getAllTenantsByPropertyId(Long propertyId) {
                 List<Tenant> tenants = tenantRepository.findByPropertyId(propertyId);
-            return tenants.stream().map(t -> ConvertToResponse(t)).collect(Collectors.toList());
+            return tenants.stream().map(t -> commonResponseMapper.convertToTenantResponse(t)).collect(Collectors.toList());
         }
         public boolean deleteTenantById(Long id) {
+            Optional<Tenant> tenant = tenantRepository.findById(id);
+            if (tenant.isEmpty()) {
+                LOGGER.error("Delete Failed");
+                throw new PropertyManagementException("Tenant not found");
+            } else {
                 try {
-                        tenantRepository.deleteById(id);
-                        return  true;
+                    Tenant newtenant = tenant.get();
+                    tenantRepository.deleteById(id);
+                    return true;
+                } catch (Exception e) {
+                    LOGGER.error("Unable to delete tenant", e);
+                    throw new PropertyManagementException("Unable to delete tenant", e);
                 }
-                catch (Exception e){
-                        LOGGER.error("Delete Failed");           //prints Exception
-                }
-                return false;
+            }
         }
+
 
 }
 
