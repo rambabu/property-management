@@ -19,6 +19,8 @@ public class Property extends BaseEntity {
    private int noOfBeds;
    private int noOfBaths;
    private double rent;
-
-
+    //many properties----to----one owner
+    @ManyToOne
+    @JoinColumn(name="owner_id",referencedColumnName = "id")
+    private Owner owner;
 }
