@@ -1,6 +1,5 @@
 package com.acro.dev.propmgnt.service;
 
-import com.acro.dev.propmgnt.controller.PropertyController;
 import com.acro.dev.propmgnt.entity.Address;
 import com.acro.dev.propmgnt.entity.Owner;
 import com.acro.dev.propmgnt.entity.Property;
@@ -11,7 +10,7 @@ import com.acro.dev.propmgnt.repository.PropertyRepository;
 import com.acro.dev.propmgnt.request.AddressRequest;
 import com.acro.dev.propmgnt.request.PropertyRequest;
 import com.acro.dev.propmgnt.response.PropertyResponse;
-import com.acro.dev.propmgnt.responsemethod.CommonResponse;
+import com.acro.dev.propmgnt.responsemethod.CommonResponseMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,33 +19,36 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 @Service
 public class PropertyServiceImpl implements PropertyService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyServiceImpl.class);
+
     private final PropertyRepository propertyRepository;
     private final OwnerRepository ownerRepository;
+
     private final AddressRepository addressRepository;
-    private final CommonResponse commonResponse;
+    private final CommonResponseMapper commonResponseMapper;
 
     public PropertyServiceImpl(@Autowired PropertyRepository propertyRepository,
                                @Autowired OwnerRepository ownerRepository,
                                @Autowired AddressRepository addressRepository,
-                               @Autowired CommonResponse commonResponse) {
+                               @Autowired CommonResponseMapper commonResponseMapper) {
         this.propertyRepository = propertyRepository;
         this.ownerRepository = ownerRepository;
         this.addressRepository = addressRepository;
-        this.commonResponse=commonResponse;
+        this.commonResponseMapper = commonResponseMapper;
 
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyController.class);
 
     @Override
     public PropertyResponse createProperty(PropertyRequest propertyRequest) {
         LOGGER.info("Received request to property");
         Property property = new Property();
         Address address = new Address();
-        AddressRequest addressRequest = new AddressRequest();
         Optional<Owner> owner = ownerRepository.findById(propertyRequest.getOwnerId());
         if (owner.isPresent()) {
             Owner ownerOne = owner.get();
+            AddressRequest addressRequest = new AddressRequest();
+            CommonResponseMapper commonResponse = new CommonResponseMapper();
             address.setId(addressRequest.getAddressId());
             address.setLineOne(addressRequest.getLineOne());
             address.setLineTwo(addressRequest.getLineTwo());
@@ -81,11 +83,11 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
 
-
     @Override
     public PropertyResponse updateProperty(Long id, PropertyRequest propertyRequest) {
         Optional<Property> property = propertyRepository.findById(id);
         if (property.isPresent()) {
+            CommonResponseMapper commonResponse = new CommonResponseMapper();
             Property existingProperty = property.get();
             existingProperty.setNoOfBaths(propertyRequest.getNoOfBaths());
             existingProperty.setNoOfBeds(propertyRequest.getNoOfBeds());
@@ -107,6 +109,7 @@ public class PropertyServiceImpl implements PropertyService {
     public PropertyResponse findPropertyById(Long id) {
         Optional<Property> property = propertyRepository.findById(id);
         if (property.isPresent()) {
+            CommonResponseMapper commonResponse = new CommonResponseMapper();
             Property propertyOne = property.get();
             return commonResponse.getPropertyResponse(propertyOne);
         }
@@ -115,16 +118,20 @@ public class PropertyServiceImpl implements PropertyService {
 
 
     @Override
-    public boolean deletePropertyById(Long id) {
-        Optional<Property>property=propertyRepository.findById(id);
-        try {
-            if( property.isPresent()){
-                Property propertyOne=property.get();
-                return true;
-            }
-        } catch (Exception e) {
+    public boolean deletePropertyByOwnerId(Long id) {
+        Optional<Owner> owner = ownerRepository.findById(id);
+        if (owner.isEmpty()) {
             LOGGER.error("Failed to delete Property Id");
+            throw new PropertyManagementException("Property not found");
+        } else {
+            try {
+                Owner callOwner = owner.get();
+                ownerRepository.deleteOwnerById(id);
+                return true;
+            } catch (Exception e) {
+                LOGGER.error("Failed to delete Property by Owner Id {}", id);
+                throw new PropertyManagementException("failed to delete PropertyByOwnerId");
+            }
         }
-        return false;
     }
 }

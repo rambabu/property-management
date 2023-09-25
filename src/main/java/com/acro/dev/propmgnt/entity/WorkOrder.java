@@ -1,16 +1,12 @@
 package com.acro.dev.propmgnt.entity;
 import lombok.Data;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 
-
-//repar--property 1-1-tentant
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class Repair {
-    @Id
-    @GeneratedValue
-    int repairId;
-    // int tenantId;
+public class WorkOrder extends  BaseEntity{
     String typeOfRepair;
     boolean isInsurance;
     int costOfRepair;

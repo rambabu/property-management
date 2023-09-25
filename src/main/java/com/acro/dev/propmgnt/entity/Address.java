@@ -1,12 +1,12 @@
 package com.acro.dev.propmgnt.entity;
-
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-//@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Table(name="address")
+@EqualsAndHashCode(callSuper = true)
 public class Address extends BaseEntity {
         @Column(name="line_one")
         private String lineOne;
@@ -19,7 +19,7 @@ public class Address extends BaseEntity {
          @Column(name="zip_code")
          private int zipcode;
          private AddressType type;
-         @ManyToOne
+         @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
          @JoinColumn(name="owner_id")
          Owner owner;
     }

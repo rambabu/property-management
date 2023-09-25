@@ -1,17 +1,21 @@
 package com.acro.dev.propmgnt.entity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class PropertyManager {
-    @Id
-    @GeneratedValue
+@Table(name="propertymanager")
+public class PropertyManager extends BaseEntity {
     int managerId;
     String managerName;
     String managerPhoneNumber;
     String managerEmail;
+    @OneToMany(mappedBy="propertyManager",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    List<Owner> OwnerList;
   }
 

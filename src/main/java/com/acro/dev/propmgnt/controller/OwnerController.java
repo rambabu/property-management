@@ -1,5 +1,6 @@
 package com.acro.dev.propmgnt.controller;
-import com.acro.dev.propmgnt.advice.CommonExceptionHandler;
+
+import com.acro.dev.propmgnt.exception.PropertyManagementException;
 import com.acro.dev.propmgnt.request.OwnerRequest;
 import com.acro.dev.propmgnt.response.OwnerResponse;
 import com.acro.dev.propmgnt.service.OwnerService;
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/owner")
 public class OwnerController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommonExceptionHandler.class);
+    //private static final Logger LOGGER = LoggerFactory.getLogger(CommonExceptionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OwnerController.class);
 
     private final OwnerService ownerService;
 
@@ -26,28 +28,28 @@ public class OwnerController {
 
 
     @PostMapping("/")
-    public ResponseEntity<OwnerResponse> createOwner(@RequestBody @Valid @NotNull OwnerRequest ownerRequest) {
-        if (ownerRequest != null) {
+    public ResponseEntity<OwnerResponse> createOwner(@RequestBody @Valid @NotNull OwnerRequest ownerRequest)
+            throws PropertyManagementException {
+        try {
             OwnerResponse ownerResponse = ownerService.createOwner(ownerRequest);
             if (ownerResponse != null) {
                 return ResponseEntity.ok(ownerResponse);
             }
+        } catch (Exception e) {
+            LOGGER.error("Failed to create Owner name {} ", ownerRequest.getOwnerFirstName());
+            throw new PropertyManagementException("Creation Failed ", e);
         }
-        LOGGER.error("Create Failed");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<OwnerResponse> updateOwner(@PathVariable Long id,
                                                      @RequestBody @Valid @NotNull OwnerRequest ownerRequest) {
-        if (ownerRequest != null) {
-            OwnerResponse ownerResponse = ownerService.updateOwner(id, ownerRequest);
-            if (ownerResponse != null) {
-                return ResponseEntity.ok(ownerResponse);
-            }
+        OwnerResponse ownerResponse = ownerService.updateOwner(id, ownerRequest);
+        if (ownerResponse != null) {
+            return ResponseEntity.ok(ownerResponse);
         }
-        LOGGER.error("Update Failed");
+        LOGGER.error("Failed to update Owner name {} ", ownerRequest.getOwnerFirstName());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
     }
@@ -58,7 +60,7 @@ public class OwnerController {
         if (ownerResponse != null) {
             return ResponseEntity.ok(ownerResponse);
         }
-        LOGGER.error("Invalid ownerId");
+        LOGGER.error("Failed to find Owner id{}",id);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
@@ -69,8 +71,8 @@ public class OwnerController {
             boolean res = this.ownerService.deleteOwnerById(id);
             return ResponseEntity.ok(res);
         }
-        //LOGGER.error("Failed to  delete Owner id {} ", ownerService.getId());
+        LOGGER.error("Not Deleted Successfully Owner {} ",id);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
     }
 }
+

@@ -1,8 +1,10 @@
 package com.acro.dev.propmgnt.entity;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Table(name="property")
 public class Property extends BaseEntity {
@@ -36,8 +38,9 @@ public class Property extends BaseEntity {
     private Address address;
 
     //many properties----to----one owner
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name="owner_id",referencedColumnName = "id")
     private Owner owner;
-}
+
+   }
 
