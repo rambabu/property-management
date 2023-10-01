@@ -17,7 +17,7 @@ public class Payment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "tenant_id", referencedColumnName = "id")
     private Tenant tenant;
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "lease_id", referencedColumnName = "id")
     private LeaseDetails lease;
     private double LateFee;

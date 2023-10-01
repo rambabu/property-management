@@ -1,7 +1,9 @@
 package com.acro.dev.propmgnt.response;
 
-import java.util.Date;
+import lombok.Data;
 
+import java.util.Date;
+@Data
 public class PaymentResponse {
     private Long tenant_id;
     private Long leaseId;

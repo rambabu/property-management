@@ -24,8 +24,7 @@ public class PropertyController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<PropertyResponse> createProperty
-            (@RequestBody @Valid @NotNull PropertyRequest propertyRequest) {
+    public ResponseEntity<PropertyResponse> createProperty(@RequestBody @Valid @NotNull PropertyRequest propertyRequest) {
         if (propertyRequest != null) {
             PropertyResponse propertyResponse = propertyService.createProperty(propertyRequest);
             if (propertyResponse != null) {

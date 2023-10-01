@@ -5,6 +5,7 @@ import com.acro.dev.propmgnt.request.LeaseRequest;
 import com.acro.dev.propmgnt.response.LeaseResponse;
 import com.acro.dev.propmgnt.service.LeaseService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class LeaseController {
         this.leaseService = leaseService;
     }
     @PostMapping("/")
-    public ResponseEntity<LeaseResponse> createLease(@RequestBody @Valid LeaseRequest leaseRequest) throws PropertyManagementException {
+    public ResponseEntity<LeaseResponse> createLease(@RequestBody @Valid @NotNull LeaseRequest leaseRequest) throws PropertyManagementException {
         try {
             if (leaseRequest != null) {
                 LeaseResponse leaseResponse = leaseService.createLease(leaseRequest);
@@ -55,10 +56,19 @@ public class LeaseController {
         logger.info("Deleted Successfully");
         return ResponseEntity.ok(result);
     }
-    @GetMapping("/{id}")
+    @GetMapping("/tenant/{tenantId}")
     public ResponseEntity<LeaseResponse> getLeaseByTenantId(@PathVariable Long tenantId) {
         LeaseResponse response = leaseService.getLeaseByTenantId(tenantId);
         if(response !=null) {
+            return ResponseEntity.ok(response);
+        }
+        logger.error("Invalid Id");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<LeaseResponse>getById(@PathVariable Long id){
+        LeaseResponse response=leaseService.getById(id);
+        if(response!=null){
             return ResponseEntity.ok(response);
         }
         logger.error("Invalid Id");

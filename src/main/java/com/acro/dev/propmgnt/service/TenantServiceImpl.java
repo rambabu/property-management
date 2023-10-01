@@ -1,6 +1,7 @@
 package com.acro.dev.propmgnt.service;
 
 import com.acro.dev.propmgnt.CommonResponseMapper;
+import com.acro.dev.propmgnt.entity.Address;
 import com.acro.dev.propmgnt.entity.Profile;
 import com.acro.dev.propmgnt.entity.Tenant;
 import com.acro.dev.propmgnt.exception.PropertyManagementException;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,45 +29,47 @@ public class TenantServiceImpl implements TenantService {
                 this.tenantRepository = tenantRepository;
                 this.commonResponseMapper = commonResponseMapper1;
         }
-
+        @Transactional
         @Override
         public TenantResponse createTenant(TenantRequest tenantReq) {
                 LOGGER.info("Received tenant request {}", tenantReq);
-                Tenant tenant = new Tenant();
-                Profile profile = new Profile();
-                profile.setFName(tenantReq.getFirstName());     // Convert request object to model entities
-                profile.setLName(tenantReq.getLastName());
-                profile.setEmail(tenantReq.getEmail());
-                profile.setPhoneNumber(tenantReq.getPhoneNumber());
-                profile.setSsn(tenantReq.getSsn());
-                tenant.setProfile(profile);
-               // tenant.setPropertyId(tenantReq.getPropertyId());
-                Tenant tenant1 = tenantRepository.save(tenant);   // save model to DB
+            Tenant tenant = getTenant(tenantReq);
+                Tenant savedTenant = tenantRepository.save(tenant);   // save model to DB
                 LOGGER.info("Saved Successfully");
-                return commonResponseMapper.convertToTenantResponse(tenant1);      // convert model to response object
+                return commonResponseMapper.convertToTenantResponse(savedTenant);      // convert model to response object
         }
-
-        @Override
+    private Tenant getTenant(TenantRequest tenantReq) {
+        Tenant tenant = new Tenant();
+        Profile profile = new Profile();
+        Address address=new Address();
+        profile.setFirstName(tenantReq.getFirstName());     // Convert request object to model entities
+        profile.setLastName(tenantReq.getLastName());
+        profile.setEmail(tenantReq.getEmail());
+        profile.setPhoneNumber(tenantReq.getPhoneNumber());
+        profile.setSsn(tenantReq.getSsn());
+        tenant.setProfile(profile);
+        return tenant;
+    }
+    @Override
+        @Transactional
         public TenantResponse updateTenant(Long id,TenantRequest tenantReq) {
                 // Check if tenant is present
                 Optional<Tenant> tenant = tenantRepository.findById(id);
                 if (tenant.isPresent()) {
                         Tenant tenant1 = tenant.get();  // set values from request to tenant model
                         Profile profile = tenant1.getProfile();
-                        profile.setFName(tenantReq.getFirstName());
-                        profile.setLName(tenantReq.getLastName());
+                        profile.setFirstName(tenantReq.getFirstName());
+                        profile.setLastName(tenantReq.getLastName());
                         profile.setEmail(tenantReq.getEmail());
                         profile.setPhoneNumber(tenantReq.getPhoneNumber());
                         profile.setSsn(tenantReq.getSsn());
-                       // tenant1.setPropertyId(tenantReq.getPropertyId());
+                       //tenant1.setPropertyId(tenantReq.getPropertyId());
                         Tenant tenant2 = tenantRepository.save(tenant1);         // call save to update the DB record
                         LOGGER.info("Tenant updated Successfully {}", tenant2);
                         return commonResponseMapper.convertToTenantResponse(tenant2);      // convert the result to response object
                 }
                throw new PropertyManagementException("Tenant not found");
         }
-
-
         @Override
         public TenantResponse getById(Long id) {
                 Optional<Tenant> tenant = tenantRepository.findById(id);

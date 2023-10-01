@@ -6,7 +6,9 @@ import com.acro.dev.propmgnt.entity.Property;
 import com.acro.dev.propmgnt.response.AddressResponse;
 import com.acro.dev.propmgnt.response.OwnerResponse;
 import com.acro.dev.propmgnt.response.PropertyResponse;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CommonResponse {
     public OwnerResponse getOwnerResponse(Owner owner) {
         OwnerResponse ownerResponse = new OwnerResponse();

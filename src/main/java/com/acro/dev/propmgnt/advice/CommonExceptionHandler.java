@@ -4,6 +4,7 @@ import com.acro.dev.propmgnt.exception.PropertyManagementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-//@Component
+@Component
 public class CommonExceptionHandler {
     private static final Logger LOGGER= LoggerFactory.getLogger(CommonExceptionHandler.class);
     @ResponseStatus(HttpStatus.BAD_REQUEST)

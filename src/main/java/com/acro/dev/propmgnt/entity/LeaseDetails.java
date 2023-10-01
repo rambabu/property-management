@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -16,18 +16,21 @@ public class LeaseDetails extends BaseEntity{
     @OneToOne
     @JoinColumn(name= "property_id", referencedColumnName = "id")
     private Property property;
-    @OneToMany(mappedBy = "tenant")
+    @OneToMany(mappedBy = "lease", fetch = FetchType.EAGER)
     private List<Tenant> tenants;
-   private Date leaseDate;
-    private Date leaseStartDate;
-    private Date leaseEndDate;
+    private LocalDate leaseDate;
+    private LocalDate leaseStartDate;
+    private LocalDate leaseEndDate;
     private int leaseTerm;
     private double monthlyRent;
     private double securityDepositAmount;
     private int pets;
+    @Column(name="is_insured")
     private boolean isInsured;
+
     private double petDeposit;
     private boolean leaseStatus;
+    @Column(name="no_of_people")
     private int noOfPeople;
 
 

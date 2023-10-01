@@ -61,8 +61,6 @@ public class OwnerServiceImpl implements  OwnerService {
         throw new PropertyManagementException("Owner not found");
     }
 
-
-
     @Override
     public OwnerResponse findOwnerById(Long id) {
         Optional<Owner> owner=ownerRepository.findById(id);

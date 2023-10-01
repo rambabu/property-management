@@ -1,18 +1,17 @@
 package com.acro.dev.propmgnt.response;
 
-import com.acro.dev.propmgnt.entity.Tenant;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 @Data
 public class LeaseResponse {
     private Long leaseId;
     private Long propertyId;
-    private List<Tenant> tenants;
-    private Date leaseDate;
-    private Date leaseStartDate;
-    private Date leaseEndDate;
+    private List<TenantResponse> tenants;
+    private LocalDate leaseDate;
+    private LocalDate leaseStartDate;
+    private LocalDate leaseEndDate;
     private int leaseTerm;
     private double monthlyRent;
     private double securityDepositAmount;

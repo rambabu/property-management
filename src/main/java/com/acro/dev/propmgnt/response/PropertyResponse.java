@@ -6,7 +6,6 @@ public class PropertyResponse {
     private Long ownerId;
     private Long propertyId;
     private Long addressId;
-
     int noOfBeds;
     int noOfBaths;
     private String areaOfUnit;

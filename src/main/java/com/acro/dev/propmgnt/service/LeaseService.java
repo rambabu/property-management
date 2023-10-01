@@ -12,4 +12,6 @@ public interface LeaseService {
     Boolean deleteLeaseById(Long id);
 
     LeaseResponse getLeaseByTenantId(Long id);
+
+    LeaseResponse getById(Long id);
 }
