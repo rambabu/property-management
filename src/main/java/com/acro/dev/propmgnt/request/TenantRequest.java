@@ -16,9 +16,9 @@ import java.util.List;
 public class TenantRequest {
     private Long tenantId;
     private Long profileId;
-    @NotBlank
+    @NotBlank(message = "please provide FirstName")
     private String firstName;
-    @NotBlank
+    @NotBlank(message="please provide lastname")
     private String lastName;
     @NotNull
     @Email(message = "Please provide proper email")

@@ -1,4 +1,4 @@
-package com.acro.dev.propmgnt.Property.Management;
+package com.acro.dev.propmgnt;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
