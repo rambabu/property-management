@@ -1,10 +1,10 @@
 package com.acro.dev.propmgnt.repository;
-import com.acro.dev.propmgnt.entity.Property;
+
+import com.acro.dev.propmgnt.entity.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PropertyRepository extends JpaRepository<Property, Long> {
-    public Boolean deletePropertyById(Long id);
+public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
 }

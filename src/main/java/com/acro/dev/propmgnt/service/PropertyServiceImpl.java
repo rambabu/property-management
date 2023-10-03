@@ -68,7 +68,7 @@ public class PropertyServiceImpl implements PropertyService {
             property.setGarageDimension(propertyRequest.getGarageDimension());
             property.setRent(propertyRequest.getRent());
             property.setOwner(owner.get());
-            property.setAddress(addressOne);
+            //property.setAddress(addressOne);
 
 
             Property propertyOne = propertyRepository.save(property);

@@ -1,5 +1,6 @@
 package com.acro.dev.propmgnt.service;
 
+import com.acro.dev.propmgnt.advice.CommonExceptionHandler;
 import com.acro.dev.propmgnt.entity.Owner;
 import com.acro.dev.propmgnt.exception.PropertyManagementException;
 import com.acro.dev.propmgnt.repository.OwnerRepository;
@@ -20,8 +21,8 @@ public class OwnerServiceImpl implements  OwnerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OwnerServiceImpl.class);
     private final OwnerRepository ownerRepository;
     private final CommonResponseMapper commonResponseMapper;
-
-    public OwnerServiceImpl(@Autowired OwnerRepository ownerRepository, CommonResponseMapper commonResponseMapper) {
+    public OwnerServiceImpl(@Autowired OwnerRepository ownerRepository,
+                            @Autowired CommonResponseMapper commonResponseMapper) {
 
         this.ownerRepository = ownerRepository;
         this.commonResponseMapper = commonResponseMapper;
@@ -32,9 +33,9 @@ public class OwnerServiceImpl implements  OwnerService {
     @Transactional
     public OwnerResponse createOwner(OwnerRequest ownerRequest) {
         // Convert request object to model entities
-        LOGGER.info("Received owner request {}", ownerRequest);
-
-        Owner owner = new Owner();
+        LOGGER.info("Received request to Owner");
+        Owner owner=new Owner();
+        // owner.setOwnerId(ownerRequest.getOwnerId());
         owner.setOwnerFirstName(ownerRequest.getOwnerFirstName());
         owner.setOwnerLastName(ownerRequest.getOwnerLastName());
         owner.setOwnerEmail(ownerRequest.getOwnerEmail());
@@ -60,23 +61,22 @@ public class OwnerServiceImpl implements  OwnerService {
             existingOwner.setOwnerEmail(ownerRequest.getOwnerEmail());
             existingOwner.setOwnerPhoneNumber(ownerRequest.getOwnerPhoneNumber());
             Owner updated = ownerRepository.save(existingOwner);
-            LOGGER.info("Successfully Updated Owner {} ", ownerRequest.getOwnerFirstName());
-            return commonResponseMapper.getOwnerResponse(updated);
+            LOGGER.info("Updated Successfully");
+            return commonResponse.getOwnerResponse(updated);
         }
         throw new PropertyManagementException("Owner not found");
     }
 
 
-    @Override
 
+    @Override
     public OwnerResponse findOwnerById(Long id) {
-        Optional<Owner> owner = ownerRepository.findById(id);
-        if (owner.isPresent()) {
-            CommonResponseMapper commonResponse = new CommonResponseMapper();
-            Owner ownerOne = owner.get();
-            return commonResponse.getOwnerResponse(ownerOne);
+        Optional<Owner> owner=ownerRepository.findById(id);
+        if(owner.isPresent()){
+            Owner ownerOne=owner.get();
+            return commonResponseMapper.getOwnerResponse(ownerOne);
         }
-        throw new PropertyManagementException("Owner not found");
+         throw new PropertyManagementException("Owner not found");
     }
 
     @Override
@@ -90,12 +90,11 @@ public class OwnerServiceImpl implements  OwnerService {
                 Owner callOwner = owner.get();
                 ownerRepository.deleteById(id);
                 return true;
-            } catch (Exception e) {
-                LOGGER.error("Failed to delete Owner Id {}", id);
-                throw new PropertyManagementException("failed to delete OwnerId");
             }
-
-
+        }catch(Exception e){
+            LOGGER.error("Failed to delete Owner Id");
         }
+        return false;
     }
+
 }

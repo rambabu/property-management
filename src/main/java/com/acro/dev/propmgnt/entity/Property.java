@@ -11,34 +11,21 @@ import java.util.List;
 @Table(name="property")
 public class Property extends BaseEntity {
     @Column(name="noof_beds")
-    int noOfBeds;
-
+    private int noOfBeds;
     @Column(name="noof_baths")
-    int noOfBaths;
+    private int noOfBaths;
+    private double rent;
 
-    @Column(name="area_ofunit")
-    String areaOfUnit;
-
+    @Column(name = "area_ofunit")
+    private String areaOfUnit;
     @Column(name="hall_dimension")
-    String hallDimension;
-
-
+    private String hallDimension;
     @Column(name="kitchen_dimension")
-    String kitchenDimension;
-
+    private String kitchenDimension;
     @Column(name="bedroom_dimension")
-    String bedRoomDimension;
-
+    private String bedRoomDimension;
     @Column(name="garage_dimension")
-    String garageDimension;
-
-    @Column(name="rent")
-    double rent;
-
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name="address_id", referencedColumnName = "id")
-    private Address address;
-
+    private String garageDimension;
     //many properties----to----one owner
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name="owner_id",referencedColumnName = "id")

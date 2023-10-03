@@ -30,7 +30,7 @@ public class Owner extends BaseEntity {
         @Column(name="ein_number")
         private Long einNumber;
 
-         @OneToMany(mappedBy = "owner",cascade = CascadeType.ALL,fetch = FetchType.EAGER)//1o----many properties
+         @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)//1o----many properties
          List<Property> PropertyList;
 
          @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
@@ -38,5 +38,4 @@ public class Owner extends BaseEntity {
          private PropertyManager propertyManager;
 
 
-
-}
+    }

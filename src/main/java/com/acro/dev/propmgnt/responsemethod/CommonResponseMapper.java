@@ -1,5 +1,6 @@
 package com.acro.dev.propmgnt.responsemethod;
 
+import com.acro.dev.propmgnt.entity.Address;
 import com.acro.dev.propmgnt.entity.Owner;
 import com.acro.dev.propmgnt.entity.Property;
 import com.acro.dev.propmgnt.entity.WorkOrder;
@@ -20,6 +21,7 @@ public class CommonResponseMapper {
         ownerResponse.setOwnerPhoneNumber(owner.getOwnerPhoneNumber());
         return ownerResponse;
     }
+
     public PropertyResponse getPropertyResponse(Property property) {
         PropertyResponse propertyResponse = new PropertyResponse();
         propertyResponse.setPropertyId(property.getId());
@@ -35,8 +37,9 @@ public class CommonResponseMapper {
         propertyResponse.setRent(property.getRent());
         return propertyResponse;
     }
-    public WorkOrderResponse getWorkOrderResponse(WorkOrder workOrder){
-        WorkOrderResponse workOrderResponse=new WorkOrderResponse();
+
+    public WorkOrderResponse getWorkOrderResponse(WorkOrder workOrder) {
+        WorkOrderResponse workOrderResponse = new WorkOrderResponse();
         workOrderResponse.setPropertyId(workOrder.getProperty().getId());
         workOrderResponse.setTenantId(workOrder.getTenant().getId());
         workOrderResponse.setProblemDescription((workOrder.getProblemDescription()));
@@ -47,6 +50,6 @@ public class CommonResponseMapper {
         workOrderResponse.setPermissionToEnter(workOrder.getPermissionToEnter());
         return workOrderResponse;
 
-    }
 
+    }
 }

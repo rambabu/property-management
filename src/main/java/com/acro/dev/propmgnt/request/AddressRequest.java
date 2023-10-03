@@ -10,12 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddressRequest {
-   // @NotNull
     private Long addressId;
-
     @NotEmpty
     private String lineOne;
-
     private String lineTwo;
     @NotEmpty
     private String city;
@@ -23,7 +20,7 @@ public class AddressRequest {
     private String state;
     @NotNull
     private int zipcode;
-    @NotEmpty
+    @NotNull(message = "type of address is necessary")
     private AddressType type;
 
 }
