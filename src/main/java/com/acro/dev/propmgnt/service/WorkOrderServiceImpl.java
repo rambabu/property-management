@@ -1,11 +1,9 @@
 package com.acro.dev.propmgnt.service;
 
 import com.acro.dev.propmgnt.entity.Property;
-import com.acro.dev.propmgnt.entity.Tenant;
 import com.acro.dev.propmgnt.entity.WorkOrder;
 import com.acro.dev.propmgnt.exception.PropertyManagementException;
 import com.acro.dev.propmgnt.repository.PropertyRepository;
-import com.acro.dev.propmgnt.repository.TenantRepository;
 import com.acro.dev.propmgnt.repository.WorkOrderRepository;
 import com.acro.dev.propmgnt.request.WorkOrderRequest;
 import com.acro.dev.propmgnt.response.WorkOrderResponse;
