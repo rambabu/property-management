@@ -7,8 +7,8 @@ public class PropertyResponse {
     private Long propertyId;
     private Long addressId;
 
-    int noOfBeds;
-    int noOfBaths;
+    private int noOfBeds;
+    private int noOfBaths;
     private String areaOfUnit;
     private String hallDimension;
     private String kitchenDimension;

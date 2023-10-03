@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -28,6 +29,7 @@ public class OwnerServiceImpl implements  OwnerService {
 
 
     @Override
+    @Transactional
     public OwnerResponse createOwner(OwnerRequest ownerRequest) {
         // Convert request object to model entities
         LOGGER.info("Received owner request {}", ownerRequest);
@@ -47,6 +49,7 @@ public class OwnerServiceImpl implements  OwnerService {
 
 
     @Override
+    @Transactional
     public OwnerResponse updateOwner(Long id, OwnerRequest ownerRequest) {
         Optional<Owner> owner = ownerRepository.findById(id);
 
@@ -65,6 +68,7 @@ public class OwnerServiceImpl implements  OwnerService {
 
 
     @Override
+
     public OwnerResponse findOwnerById(Long id) {
         Optional<Owner> owner = ownerRepository.findById(id);
         if (owner.isPresent()) {

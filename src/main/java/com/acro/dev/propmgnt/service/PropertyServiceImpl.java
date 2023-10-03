@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 @Service
@@ -40,6 +41,7 @@ public class PropertyServiceImpl implements PropertyService {
 
 
     @Override
+    @Transactional
     public PropertyResponse createProperty(PropertyRequest propertyRequest) {
         LOGGER.info("Received request to property");
         Property property = new Property();
@@ -48,7 +50,6 @@ public class PropertyServiceImpl implements PropertyService {
         if (owner.isPresent()) {
             Owner ownerOne = owner.get();
             AddressRequest addressRequest = new AddressRequest();
-            CommonResponseMapper commonResponse = new CommonResponseMapper();
             address.setId(addressRequest.getAddressId());
             address.setLineOne(addressRequest.getLineOne());
             address.setLineTwo(addressRequest.getLineTwo());
@@ -72,8 +73,8 @@ public class PropertyServiceImpl implements PropertyService {
 
             Property propertyOne = propertyRepository.save(property);
             LOGGER.info("Owner address saved");
-            LOGGER.info("Create property");
-            return commonResponse.getPropertyResponse(propertyOne);
+            LOGGER.info("Created property");
+            return commonResponseMapper.getPropertyResponse(propertyOne);
 
 
         } else {
@@ -84,10 +85,10 @@ public class PropertyServiceImpl implements PropertyService {
 
 
     @Override
+    @Transactional
     public PropertyResponse updateProperty(Long id, PropertyRequest propertyRequest) {
         Optional<Property> property = propertyRepository.findById(id);
         if (property.isPresent()) {
-            CommonResponseMapper commonResponse = new CommonResponseMapper();
             Property existingProperty = property.get();
             existingProperty.setNoOfBaths(propertyRequest.getNoOfBaths());
             existingProperty.setNoOfBeds(propertyRequest.getNoOfBeds());
@@ -99,7 +100,7 @@ public class PropertyServiceImpl implements PropertyService {
 
             Property updatedProperty = propertyRepository.save(existingProperty);
             LOGGER.info("Property Updated Successfully");
-            return commonResponse.getPropertyResponse(updatedProperty);
+            return commonResponseMapper.getPropertyResponse(updatedProperty);
         }
         throw new PropertyManagementException("Property not found");
     }
@@ -109,15 +110,15 @@ public class PropertyServiceImpl implements PropertyService {
     public PropertyResponse findPropertyById(Long id) {
         Optional<Property> property = propertyRepository.findById(id);
         if (property.isPresent()) {
-            CommonResponseMapper commonResponse = new CommonResponseMapper();
             Property propertyOne = property.get();
-            return commonResponse.getPropertyResponse(propertyOne);
+            return commonResponseMapper.getPropertyResponse(propertyOne);
         }
         throw new PropertyManagementException("Property not found");
     }
 
 
     @Override
+
     public boolean deletePropertyByOwnerId(Long id) {
         Optional<Owner> owner = ownerRepository.findById(id);
         if (owner.isEmpty()) {

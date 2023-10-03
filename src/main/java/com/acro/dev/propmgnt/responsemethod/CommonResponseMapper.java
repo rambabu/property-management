@@ -2,8 +2,10 @@ package com.acro.dev.propmgnt.responsemethod;
 
 import com.acro.dev.propmgnt.entity.Owner;
 import com.acro.dev.propmgnt.entity.Property;
+import com.acro.dev.propmgnt.entity.WorkOrder;
 import com.acro.dev.propmgnt.response.OwnerResponse;
 import com.acro.dev.propmgnt.response.PropertyResponse;
+import com.acro.dev.propmgnt.response.WorkOrderResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -33,7 +35,18 @@ public class CommonResponseMapper {
         propertyResponse.setRent(property.getRent());
         return propertyResponse;
     }
+    public WorkOrderResponse getWorkOrderResponse(WorkOrder workOrder){
+        WorkOrderResponse workOrderResponse=new WorkOrderResponse();
+        workOrderResponse.setPropertyId(workOrder.getProperty().getId());
+        workOrderResponse.setTenantId(workOrder.getTenant().getId());
+        workOrderResponse.setProblemDescription((workOrder.getProblemDescription()));
+        workOrderResponse.setTypeOfWorkOrder(workOrder.getTypeOfWorkOrder());
+        workOrderResponse.setWoDate(workOrder.getWoDate());
+        workOrderResponse.setWoStartDate(workOrder.getWoStartDate());
+        workOrderResponse.setWoEndDate(workOrder.getWoEndDate());
+        workOrderResponse.setPermissionToEnter(workOrder.getPermissionToEnter());
+        return workOrderResponse;
 
-
+    }
 
 }

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/owner")
 public class OwnerController {
-    //private static final Logger LOGGER = LoggerFactory.getLogger(CommonExceptionHandler.class);
     private static final Logger LOGGER = LoggerFactory.getLogger(OwnerController.class);
 
     private final OwnerService ownerService;
@@ -45,34 +44,46 @@ public class OwnerController {
     @PutMapping("/{id}")
     public ResponseEntity<OwnerResponse> updateOwner(@PathVariable Long id,
                                                      @RequestBody @Valid @NotNull OwnerRequest ownerRequest) {
-        OwnerResponse ownerResponse = ownerService.updateOwner(id, ownerRequest);
-        if (ownerResponse != null) {
-            return ResponseEntity.ok(ownerResponse);
+        try {
+            OwnerResponse ownerResponse = ownerService.updateOwner(id, ownerRequest);
+            if (ownerResponse != null) {
+                return ResponseEntity.ok(ownerResponse);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to update Owner name {} ", ownerRequest.getOwnerFirstName());
+            throw new PropertyManagementException("Failed to update ownerId ");
         }
-        LOGGER.error("Failed to update Owner name {} ", ownerRequest.getOwnerFirstName());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
     }
 
-    @GetMapping("/{id}")
+        @GetMapping("/{id}")
     public ResponseEntity<OwnerResponse> findOwnerById(@PathVariable Long id) {
-        OwnerResponse ownerResponse = ownerService.findOwnerById(id);
-        if (ownerResponse != null) {
-            return ResponseEntity.ok(ownerResponse);
+        try {
+            OwnerResponse ownerResponse = ownerService.findOwnerById(id);
+            if (ownerResponse != null) {
+                return ResponseEntity.ok(ownerResponse);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to find Owner id{}", id);
+            throw new PropertyManagementException("Failed to find ownerId "+ id);
         }
-        LOGGER.error("Failed to find Owner id{}",id);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @DeleteMapping("/{id}")
+        @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteOwnerById(@PathVariable Long id) {
-        OwnerResponse ownerResponse = ownerService.findOwnerById(id);
-        if (ownerResponse != null) {
-            boolean res = this.ownerService.deleteOwnerById(id);
-            return ResponseEntity.ok(res);
+        try {
+            OwnerResponse ownerResponse = ownerService.findOwnerById(id);
+            if (ownerResponse != null) {
+                boolean res = this.ownerService.deleteOwnerById(id);
+                return ResponseEntity.ok(res);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Not Deleted Successfully Owner {} ", id);
+            throw new PropertyManagementException("Failed to delete workOrderId {}" + id);
         }
-        LOGGER.error("Not Deleted Successfully Owner {} ",id);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }
-}
 
+    }
+
+}

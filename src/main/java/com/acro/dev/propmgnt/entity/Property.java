@@ -3,6 +3,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -33,14 +35,18 @@ public class Property extends BaseEntity {
     @Column(name="rent")
     double rent;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name="address_id", referencedColumnName = "id")
     private Address address;
 
     //many properties----to----one owner
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name="owner_id",referencedColumnName = "id")
     private Owner owner;
 
-   }
+    @OneToMany(mappedBy = "property",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    List<WorkOrder> workOrderList;
+
+
+}
 
