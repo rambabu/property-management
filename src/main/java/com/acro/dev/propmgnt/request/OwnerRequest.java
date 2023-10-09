@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 public class OwnerRequest {
     private Long ownerId;
 
+    private Long managerId;
+
+
     private String ownerFirstName;
 
     private  String ownerLastName;
@@ -26,6 +29,10 @@ public class OwnerRequest {
 
     @NotNull
      private Long einNumber;
+
+    private String data;
+    private String fileName;
+
 
 
 }

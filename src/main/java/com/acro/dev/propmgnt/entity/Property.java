@@ -27,11 +27,16 @@ public class Property extends BaseEntity {
     @Column(name="garage_dimension")
     private String garageDimension;
     //many properties----to----one owner
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="owner_id",referencedColumnName = "id")
     private Owner owner;
 
-    @OneToMany(mappedBy = "property",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name="address_id", referencedColumnName = "id")
+    private Address address;
+
+
+    @OneToMany(mappedBy = "property",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     List<WorkOrder> workOrderList;
 
 

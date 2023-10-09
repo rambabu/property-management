@@ -6,5 +6,5 @@ public interface PropertyService {
     public PropertyResponse createProperty(PropertyRequest propertyRequest);
     public PropertyResponse updateProperty(Long id,PropertyRequest propertyRequest);
     public PropertyResponse findPropertyById(Long id);
-    public boolean deletePropertyByOwnerId(Long id);
+    public boolean deletePropertyById(Long id);
 }

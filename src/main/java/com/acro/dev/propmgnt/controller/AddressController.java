@@ -24,10 +24,12 @@ public class AddressController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<AddressResponse> createLease(@RequestBody @Valid @NotNull AddressRequest addressRequest) throws PropertyManagementException {
+    public ResponseEntity<AddressResponse> createAddress(@RequestBody @Valid @NotNull AddressRequest addressRequest) throws PropertyManagementException {
         try {
             AddressResponse addressResponse = addressService.createAddress(addressRequest);
-            if (addressResponse != null) return ResponseEntity.ok(addressResponse);
+            if (addressResponse != null) {
+                return ResponseEntity.ok(addressResponse);
+            }
         } catch (Exception e) {
             logger.error("Creation Failed", e);
             throw new PropertyManagementException("creation failed", e);

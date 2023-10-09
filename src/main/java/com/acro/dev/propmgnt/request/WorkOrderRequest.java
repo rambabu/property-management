@@ -15,7 +15,7 @@ public class WorkOrderRequest {
     private Long workOrderId;
    // private List<Property> property; //Is List possible here
     private Long propertyId;
-    private Long tenantId;
+   // private Long tenantId;
     @NotNull(message="please provide valid description")
     private String problemDescription;
 

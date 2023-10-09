@@ -1,5 +1,6 @@
 package com.acro.dev.propmgnt.service;
 
+import com.acro.dev.propmgnt.CommonResponseMapper;
 import com.acro.dev.propmgnt.entity.Property;
 import com.acro.dev.propmgnt.entity.WorkOrder;
 import com.acro.dev.propmgnt.exception.PropertyManagementException;
@@ -7,7 +8,7 @@ import com.acro.dev.propmgnt.repository.PropertyRepository;
 import com.acro.dev.propmgnt.repository.WorkOrderRepository;
 import com.acro.dev.propmgnt.request.WorkOrderRequest;
 import com.acro.dev.propmgnt.response.WorkOrderResponse;
-import com.acro.dev.propmgnt.responsemethod.CommonResponseMapper;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,33 +20,31 @@ public class WorkOrderServiceImpl implements WorkOrderService{
     private static final Logger LOGGER= LoggerFactory.getLogger(WorkOrderServiceImpl.class);
     private final WorkOrderRepository workOrderRepository;
     private final PropertyRepository propertyRepository;
-    private final TenantRepository tenantRepository;
     private final CommonResponseMapper commonResponseMapper;
     public WorkOrderServiceImpl(@Autowired WorkOrderRepository workOrderRepository,
                                 @Autowired PropertyRepository propertyRepository,
-                                @Autowired TenantRepository tenantRepository,
                                 @Autowired CommonResponseMapper commonResponseMapper){
         this.workOrderRepository=workOrderRepository;
         this.propertyRepository=propertyRepository;
-        this.tenantRepository=tenantRepository;
         this.commonResponseMapper=commonResponseMapper;
     }
     @Override
-   // @Transactional
+   @Transactional
     public WorkOrderResponse createWorkOrder(WorkOrderRequest workOrderRequest) {
         LOGGER.info("Received request to WorkOrder");
         WorkOrder workOrder=new WorkOrder();
         Optional<Property> property=propertyRepository.findById(workOrderRequest.getPropertyId());
-        Optional<Tenant> tenant=tenantRepository.findById(workOrderRequest.getTenantId());
-        if(property.isPresent()&& tenant.isPresent()){
+        //Optional<Tenant> tenant=tenantRepository.findById(workOrderRequest.getTenantId());
+        if(property.isPresent()){
            Property propertyOne=property.get();
-           Tenant tenantOne=tenant.get();
+          // Tenant tenantOne=tenant.get();
             workOrder.setProblemDescription((workOrderRequest.getProblemDescription()));
             workOrder.setTypeOfWorkOrder(workOrderRequest.getTypeOfWorkOrder());
             workOrder.setWoDate(workOrderRequest.getWoDate());
             workOrder.setWoStartDate(workOrderRequest.getWoStartDate());
             workOrder.setWoEndDate(workOrderRequest.getWoEndDate());
             workOrder.setPermissionToEnter(workOrderRequest.getPermissionToEnter());
+            workOrder.setProperty(property.get());
             WorkOrder workOrderOne=workOrderRepository.save(workOrder);
             LOGGER.info("Created WorkOrder ");
             return commonResponseMapper.getWorkOrderResponse(workOrderOne);
@@ -55,7 +54,7 @@ public class WorkOrderServiceImpl implements WorkOrderService{
     }
 
     @Override
-   // @Transactional
+    @Transactional
     public WorkOrderResponse updateWorkOrder(Long id,WorkOrderRequest workOrderRequest) {
         LOGGER.info("updating WorkOrder");
         Optional<WorkOrder> workOrder = workOrderRepository.findById(id);

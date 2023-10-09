@@ -30,10 +30,10 @@ public class Owner extends BaseEntity {
         @Column(name="ein_number")
         private Long einNumber;
 
-         @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)//1o----many properties
+         @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)//1o----many properties
          List<Property> PropertyList;
 
-         @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+         @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
          @JoinColumn(name="manager_id",referencedColumnName = "id")
          private PropertyManager propertyManager;
 

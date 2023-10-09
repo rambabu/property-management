@@ -8,7 +8,7 @@ import java.util.Date;
 public class WorkOrderResponse {
     private Long workOrderId;
     private Long propertyId;
-    private Long tenantId;
+    //private Long tenantId;
 
     private String problemDescription;
     private String typeOfWorkOrder;

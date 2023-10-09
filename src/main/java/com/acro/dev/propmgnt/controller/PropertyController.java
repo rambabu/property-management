@@ -2,7 +2,6 @@ package com.acro.dev.propmgnt.controller;
 
 import com.acro.dev.propmgnt.exception.PropertyManagementException;
 import com.acro.dev.propmgnt.request.PropertyRequest;
-import com.acro.dev.propmgnt.response.OwnerResponse;
 import com.acro.dev.propmgnt.response.PropertyResponse;
 import com.acro.dev.propmgnt.service.OwnerService;
 import com.acro.dev.propmgnt.service.PropertyService;
@@ -39,21 +38,21 @@ public class PropertyController {
             }
         } catch (Exception e) {
             LOGGER.error("Failed to Create Property {}", propertyRequest.getAreaOfUnit());
-            throw new PropertyManagementException("Failed to Create property {}"+ propertyRequest.getAreaOfUnit());
+            throw new PropertyManagementException("Failed to Create property {}" + propertyRequest.getAreaOfUnit());
 
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
     }
 
-@PutMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<PropertyResponse> updateProperty(@PathVariable Long id,
                                                            @RequestBody @Valid @NotNull PropertyRequest propertyRequest) {
-            PropertyResponse propertyResponse = propertyService.updateProperty(id, propertyRequest);
-            if (propertyResponse != null) {
-                return ResponseEntity.ok(propertyResponse);
-            }
-        LOGGER.error("Failed to update property {}" ,propertyRequest.getAreaOfUnit());
+        PropertyResponse propertyResponse = propertyService.updateProperty(id, propertyRequest);
+        if (propertyResponse != null) {
+            return ResponseEntity.ok(propertyResponse);
+        }
+        LOGGER.error("Failed to update property {}", propertyRequest.getAreaOfUnit());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
     }
@@ -65,20 +64,31 @@ public class PropertyController {
             return ResponseEntity.ok(propertyResponse);
 
         }
-        LOGGER.error("Failed to find property Id {}",id);
+        LOGGER.error("Failed to find property Id {}", id);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deletePropertyByOwnerId(@PathVariable Long id) {
-        OwnerResponse ownerResponse = ownerService.findOwnerById(id);
-        if (ownerResponse != null) {
-            boolean res = this.ownerService.deleteOwnerById(id);
-            LOGGER.info("Deleted successfully Property by ownerId {}",id);
-            return ResponseEntity.ok(res);
-
+    public ResponseEntity<Boolean> deletePropertyById(@PathVariable Long id) {
+        try {
+            PropertyResponse propertyResponse = propertyService.findPropertyById(id);
+            if (propertyResponse != null) {
+                boolean res = this.propertyService.deletePropertyById(id);
+                return ResponseEntity.ok(res);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Not Deleted Successfully Property {} ", id);
+            throw new PropertyManagementException("Failed to delete propertyId {}" + id);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
     }
 }
+
+
+
+
+
+
+

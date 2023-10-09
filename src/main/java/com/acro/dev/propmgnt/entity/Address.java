@@ -17,13 +17,13 @@ public class Address extends BaseEntity {
 
          private String city;
          private String state;
-         @Column(name="zip_code")
+       //  @Column(name="zip_code")
          private int zipcode;
          private AddressType type;
          @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
          @JoinColumn(name="owner_id")
          Owner owner;
-         @ManyToOne
-         Tenant tenant;
+        /* @ManyToOne
+         Tenant tenant;*/
 
 }

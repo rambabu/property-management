@@ -1,5 +1,6 @@
 package com.acro.dev.propmgnt.service;
 
+import com.acro.dev.propmgnt.CommonResponseMapper;
 import com.acro.dev.propmgnt.entity.Address;
 import com.acro.dev.propmgnt.entity.Owner;
 import com.acro.dev.propmgnt.entity.Property;
@@ -7,10 +8,8 @@ import com.acro.dev.propmgnt.exception.PropertyManagementException;
 import com.acro.dev.propmgnt.repository.AddressRepository;
 import com.acro.dev.propmgnt.repository.OwnerRepository;
 import com.acro.dev.propmgnt.repository.PropertyRepository;
-import com.acro.dev.propmgnt.request.AddressRequest;
 import com.acro.dev.propmgnt.request.PropertyRequest;
 import com.acro.dev.propmgnt.response.PropertyResponse;
-import com.acro.dev.propmgnt.responsemethod.CommonResponseMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,20 +44,12 @@ public class PropertyServiceImpl implements PropertyService {
     public PropertyResponse createProperty(PropertyRequest propertyRequest) {
         LOGGER.info("Received request to property");
         Property property = new Property();
-        Address address = new Address();
         Optional<Owner> owner = ownerRepository.findById(propertyRequest.getOwnerId());
-        if (owner.isPresent()) {
-            Owner ownerOne = owner.get();
-            AddressRequest addressRequest = new AddressRequest();
-            address.setId(addressRequest.getAddressId());
-            address.setLineOne(addressRequest.getLineOne());
-            address.setLineTwo(addressRequest.getLineTwo());
-            address.setZipcode(addressRequest.getZipcode());
-            address.setCity(addressRequest.getCity());
-            address.setState(addressRequest.getState());
-            address.setType(addressRequest.getType());
-            Address addressOne = addressRepository.save(address);
+        Optional<Address> address = addressRepository.findById(propertyRequest.getAddressId());
 
+        if (owner.isPresent() && address.isPresent()) {
+            Owner ownerOne = owner.get();
+            Address addressOne = address.get();
             property.setAreaOfUnit(propertyRequest.getAreaOfUnit());
             property.setNoOfBeds(propertyRequest.getNoOfBeds());
             property.setNoOfBaths(propertyRequest.getNoOfBaths());
@@ -68,8 +59,7 @@ public class PropertyServiceImpl implements PropertyService {
             property.setGarageDimension(propertyRequest.getGarageDimension());
             property.setRent(propertyRequest.getRent());
             property.setOwner(owner.get());
-            //property.setAddress(addressOne);
-
+            property.setAddress(address.get());
 
             Property propertyOne = propertyRepository.save(property);
             LOGGER.info("Owner address saved");
@@ -119,20 +109,20 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
 
-    public boolean deletePropertyByOwnerId(Long id) {
-        Optional<Owner> owner = ownerRepository.findById(id);
-        if (owner.isEmpty()) {
+    public boolean deletePropertyById(Long id) {
+        Optional<Property> property = propertyRepository.findById(id);
+        if (property.isEmpty()) {
             LOGGER.error("Failed to delete Property Id");
             throw new PropertyManagementException("Property not found");
         } else {
             try {
-                Owner callOwner = owner.get();
-                ownerRepository.deleteOwnerById(id);
+                Property callOwner = property.get();
+                propertyRepository.deletePropertyById(id);
                 return true;
             } catch (Exception e) {
-                LOGGER.error("Failed to delete Property by Owner Id {}", id);
-                throw new PropertyManagementException("failed to delete PropertyByOwnerId");
+                LOGGER.error("Failed to delete Property  Id {}", id);
             }
         }
+    return false;
     }
 }

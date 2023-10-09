@@ -69,6 +69,20 @@ public class OwnerController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+    @GetMapping("/downloadFile/{id}")
+    public ResponseEntity<OwnerResponse>generateFileByOwnerId(@PathVariable Long id){
+        try {
+            OwnerResponse ownerResponse = ownerService.generateFileByOwnerId(id);
+            if (ownerResponse != null) {
+                return ResponseEntity.ok(ownerResponse);
+            }
+         } catch (Exception e) {
+            LOGGER.error("Failed to find Owner id{}", id);
+            throw new PropertyManagementException("Failed to find ownerId "+ id);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+    }
 
         @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteOwnerById(@PathVariable Long id) {
@@ -80,9 +94,10 @@ public class OwnerController {
             }
         } catch (Exception e) {
             LOGGER.error("Not Deleted Successfully Owner {} ", id);
-            throw new PropertyManagementException("Failed to delete workOrderId {}" + id);
+            throw new PropertyManagementException("Failed to delete ownerId {}" + id);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
 
     }
 

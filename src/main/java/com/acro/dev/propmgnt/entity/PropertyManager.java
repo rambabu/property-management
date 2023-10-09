@@ -11,9 +11,11 @@ import java.util.List;
 @Data
 @Table(name="propertymanager")
 public class PropertyManager extends BaseEntity {
-    int managerId;
+    @Column(name="manager_name")
     String managerName;
-    String managerPhoneNumber;
+    @Column(name="manager_phone_number")
+    Long managerPhoneNumber;
+    @Column(name = "manager_email")
     String managerEmail;
     @OneToMany(mappedBy="propertyManager",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     List<Owner> OwnerList;
