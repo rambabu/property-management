@@ -2,7 +2,6 @@ package com.acro.dev.propmgnt.service;
 
 import com.acro.dev.propmgnt.CommonResponseMapper;
 import com.acro.dev.propmgnt.entity.Address;
-import com.acro.dev.propmgnt.entity.Owner;
 import com.acro.dev.propmgnt.exception.PropertyManagementException;
 import com.acro.dev.propmgnt.repository.AddressRepository;
 import com.acro.dev.propmgnt.repository.OwnerRepository;
@@ -21,40 +20,35 @@ import java.util.Optional;
 
 @Service
 public class AddressServiceImpl implements AddressService {
-    private static final Logger logger= LoggerFactory.getLogger(AddressServiceImpl.class);
-        private final AddressRepository addressRepository;
-        private final OwnerRepository ownerRepository;
-         private final CommonResponseMapper commonResponseMapper;
+    private static final Logger logger = LoggerFactory.getLogger(AddressServiceImpl.class);
+    private final AddressRepository addressRepository;
+    private final OwnerRepository ownerRepository;
+    private final CommonResponseMapper commonResponseMapper;
     @Value("${property.allowed.zipcodes}")
     private Long zipCode;
-    public AddressServiceImpl(@Autowired AddressRepository addressRepository, AddressRepository addressRepository1, OwnerRepository ownerRepository, CommonResponseMapper commonResponseMapper){
+
+    public AddressServiceImpl(@Autowired AddressRepository addressRepository, AddressRepository addressRepository1, OwnerRepository ownerRepository, CommonResponseMapper commonResponseMapper) {
         this.addressRepository = addressRepository;
         this.ownerRepository = ownerRepository;
-        this.commonResponseMapper=commonResponseMapper;
+        this.commonResponseMapper = commonResponseMapper;
     }
+
     @Transactional
     @Override
     public AddressResponse createAddress(AddressRequest addressRequest) {
         logger.info("Received tenant request {}", addressRequest);
         Address address = new Address();
-        Optional<Owner> owner = ownerRepository.findById(addressRequest.getOwnerId());
-        if (owner.isPresent()) {
-            Owner ownerOne = owner.get();
-            address.setLineOne(addressRequest.getLineOne());
-            address.setLineTwo(addressRequest.getLineTwo());
-            address.setCity(addressRequest.getCity());
-            address.setState(addressRequest.getState());
-            address.setZipcode(addressRequest.getZipcode());
-            address.setType(addressRequest.getType());
-            address.setOwner(owner.get());
-            // tenant.setPropertyId(tenantReq.getPropertyId());
-            Address address1 = addressRepository.save(address);   // save model to DB
-            logger.info("Saved Successfully");
-            return commonResponseMapper.convertToAddressResponse(address1);      // convert model to response object
-        }else {
-            throw new PropertyManagementException("Address not created");
-        }
-    }
+        address.setLineOne(addressRequest.getLineOne());
+        address.setLineTwo(addressRequest.getLineTwo());
+        address.setCity(addressRequest.getCity());
+        address.setState(addressRequest.getState());
+        address.setZipcode(addressRequest.getZipcode());
+        address.setType(addressRequest.getType());
+        Address address1 = addressRepository.save(address);   // save model to DB
+        logger.info("Saved Successfully");
+        return commonResponseMapper.convertToAddressResponse(address1);
+    }// convert model to response object
+
     @Override
     @Transactional
     public AddressResponse updateAddress(Long id, AddressRequest addressRequest) {
