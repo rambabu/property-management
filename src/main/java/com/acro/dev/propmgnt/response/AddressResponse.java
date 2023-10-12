@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class AddressResponse {
     private Long addressId;
+    private Long ownerId;
+
     private String lineOne;
     private String lineTwo;
     private String city;

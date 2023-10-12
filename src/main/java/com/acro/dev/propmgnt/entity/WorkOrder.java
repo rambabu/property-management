@@ -1,19 +1,39 @@
 package com.acro.dev.propmgnt.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
+import java.util.Date;
+
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Table(name= "work_order")
-public class WorkOrder extends BaseEntity{
-    private String urgency;
-    private String description;
-    private String allowed_enter;
-    private Long tenantId;
-    private Long propertyId;
+@Table(name="workorder")
+public class WorkOrder extends  BaseEntity{
+    @Column(name="problem_description")
+    private String ProblemDescription;
+    @Column(name="typeof_workorder")
+    private String typeOfWorkOrder;
+    @Column(name="wo_date")
+    private Date woDate;
+    @Column(name="wo_startdate")
+    private Date woStartDate;
+    @Column(name="wo_enddate")
+    private Date woEndDate;
+    @Column(name="permission_toenter")
+    private String permissionToEnter;
+
+
+
+
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name="property_id",referencedColumnName = "id")
+    private Property property;
+
+   /* @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name="tenant_id",referencedColumnName = "id")
+    private Tenant tenant;*/
 
 }
+

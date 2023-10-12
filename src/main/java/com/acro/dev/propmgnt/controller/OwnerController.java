@@ -1,5 +1,6 @@
 package com.acro.dev.propmgnt.controller;
-import com.acro.dev.propmgnt.advice.CommonExceptionHandler;
+
+import com.acro.dev.propmgnt.exception.PropertyManagementException;
 import com.acro.dev.propmgnt.request.OwnerRequest;
 import com.acro.dev.propmgnt.response.OwnerResponse;
 import com.acro.dev.propmgnt.service.OwnerService;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/owner")
 public class OwnerController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommonExceptionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OwnerController.class);
 
     private final OwnerService ownerService;
 
@@ -26,51 +27,78 @@ public class OwnerController {
 
 
     @PostMapping("/")
-    public ResponseEntity<OwnerResponse> createOwner(@RequestBody @Valid @NotNull OwnerRequest ownerRequest) {
-        if (ownerRequest != null) {
+    public ResponseEntity<OwnerResponse> createOwner(@RequestBody @Valid @NotNull OwnerRequest ownerRequest)
+            throws PropertyManagementException {
+        try {
             OwnerResponse ownerResponse = ownerService.createOwner(ownerRequest);
             if (ownerResponse != null) {
                 return ResponseEntity.ok(ownerResponse);
             }
+        } catch (Exception e) {
+            LOGGER.error("Failed to create Owner name {} ", ownerRequest.getOwnerFirstName());
+            throw new PropertyManagementException("Creation Failed ", e);
         }
-        LOGGER.error("Create Failed");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<OwnerResponse> updateOwner(@PathVariable Long id,
                                                      @RequestBody @Valid @NotNull OwnerRequest ownerRequest) {
-        if (ownerRequest != null) {
+        try {
             OwnerResponse ownerResponse = ownerService.updateOwner(id, ownerRequest);
             if (ownerResponse != null) {
                 return ResponseEntity.ok(ownerResponse);
             }
+        } catch (Exception e) {
+            LOGGER.error("Failed to update Owner name {} ", ownerRequest.getOwnerFirstName());
+            throw new PropertyManagementException("Failed to update ownerId ");
         }
-        LOGGER.error("Update Failed");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
     }
 
-    @GetMapping("/{id}")
+        @GetMapping("/{id}")
     public ResponseEntity<OwnerResponse> findOwnerById(@PathVariable Long id) {
-        OwnerResponse ownerResponse = ownerService.findOwnerById(id);
-        if (ownerResponse != null) {
-            return ResponseEntity.ok(ownerResponse);
+        try {
+            OwnerResponse ownerResponse = ownerService.findOwnerById(id);
+            if (ownerResponse != null) {
+                return ResponseEntity.ok(ownerResponse);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to find Owner id{}", id);
+            throw new PropertyManagementException("Failed to find ownerId "+ id);
         }
-        LOGGER.error("Invalid ownerId");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+    @GetMapping("/downloadFile/{id}")
+    public ResponseEntity<OwnerResponse>generateFileByOwnerId(@PathVariable Long id){
+        try {
+            OwnerResponse ownerResponse = ownerService.generateFileByOwnerId(id);
+            if (ownerResponse != null) {
+                return ResponseEntity.ok(ownerResponse);
+            }
+         } catch (Exception e) {
+            LOGGER.error("Failed to find Owner id{}", id);
+            throw new PropertyManagementException("Failed to find ownerId "+ id);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
-    @DeleteMapping("/{id}")
+    }
+
+        @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteOwnerById(@PathVariable Long id) {
-        OwnerResponse ownerResponse = ownerService.findOwnerById(id);
-        if (ownerResponse != null) {
-            boolean res = this.ownerService.deleteOwnerById(id);
-            return ResponseEntity.ok(res);
+        try {
+            OwnerResponse ownerResponse = ownerService.findOwnerById(id);
+            if (ownerResponse != null) {
+                boolean res = this.ownerService.deleteOwnerById(id);
+                return ResponseEntity.ok(res);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Not Deleted Successfully Owner {} ", id);
+            throw new PropertyManagementException("Failed to delete ownerId {}" + id);
         }
-        //LOGGER.error("Failed to  delete Owner id {} ", ownerService.getId());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
+
     }
+
 }

@@ -3,22 +3,23 @@ package com.acro.dev.propmgnt.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Table(name="owner")
 public class Owner extends BaseEntity {
+
+
         @Column(name="owner_firstname")
         private String ownerFirstName;
 
         @Column(name="owner_lastname")
         private  String ownerLastName;
 
-        @Getter
         @Column(name="owner_email")
         private String ownerEmail;
 
@@ -29,8 +30,12 @@ public class Owner extends BaseEntity {
         @Column(name="ein_number")
         private Long einNumber;
 
-         @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)//1o----many properties
+         @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)//1o----many properties
          List<Property> PropertyList;
+
+         @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+         @JoinColumn(name="manager_id",referencedColumnName = "id")
+         private PropertyManager propertyManager;
 
 
     }

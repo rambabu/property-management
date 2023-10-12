@@ -11,14 +11,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AddressRequest {
     private Long addressId;
+    private Long ownerId;
+
     @NotEmpty
     private String lineOne;
     private String lineTwo;
-    @NotEmpty
+    //@NotEmpty
     private String city;
     @NotEmpty
     private String state;
-    @NotNull
+   // @NotNull
     private int zipcode;
     @NotNull(message = "type of address is necessary")
     private AddressType type;

@@ -1,18 +1,15 @@
 package com.acro.dev.propmgnt.entity;
-
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
+import java.util.List;
+
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Table(name= "property")
+@Table(name="property")
 public class Property extends BaseEntity {
-    @OneToOne
-    @JoinColumn(name="address_id", referencedColumnName = "id")
-    private Address address;
-    private String type;
     @Column(name="noof_beds")
     private int noOfBeds;
     @Column(name="noof_baths")
@@ -30,7 +27,18 @@ public class Property extends BaseEntity {
     @Column(name="garage_dimension")
     private String garageDimension;
     //many properties----to----one owner
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="owner_id",referencedColumnName = "id")
     private Owner owner;
+
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name="address_id", referencedColumnName = "id")
+    private Address address;
+
+
+    @OneToMany(mappedBy = "property",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    List<WorkOrder> workOrderList;
+
+
 }
+

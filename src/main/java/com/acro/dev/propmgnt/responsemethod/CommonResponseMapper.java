@@ -3,13 +3,14 @@ package com.acro.dev.propmgnt.responsemethod;
 import com.acro.dev.propmgnt.entity.Address;
 import com.acro.dev.propmgnt.entity.Owner;
 import com.acro.dev.propmgnt.entity.Property;
-import com.acro.dev.propmgnt.response.AddressResponse;
+import com.acro.dev.propmgnt.entity.WorkOrder;
 import com.acro.dev.propmgnt.response.OwnerResponse;
 import com.acro.dev.propmgnt.response.PropertyResponse;
+import com.acro.dev.propmgnt.response.WorkOrderResponse;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CommonResponse {
+public class CommonResponseMapper {
     public OwnerResponse getOwnerResponse(Owner owner) {
         OwnerResponse ownerResponse = new OwnerResponse();
         ownerResponse.setOwnerId(owner.getId());
@@ -20,6 +21,7 @@ public class CommonResponse {
         ownerResponse.setOwnerPhoneNumber(owner.getOwnerPhoneNumber());
         return ownerResponse;
     }
+
     public PropertyResponse getPropertyResponse(Property property) {
         PropertyResponse propertyResponse = new PropertyResponse();
         propertyResponse.setPropertyId(property.getId());
@@ -36,17 +38,18 @@ public class CommonResponse {
         return propertyResponse;
     }
 
+    public WorkOrderResponse getWorkOrderResponse(WorkOrder workOrder) {
+        WorkOrderResponse workOrderResponse = new WorkOrderResponse();
+        workOrderResponse.setPropertyId(workOrder.getProperty().getId());
+        workOrderResponse.setTenantId(workOrder.getTenant().getId());
+        workOrderResponse.setProblemDescription((workOrder.getProblemDescription()));
+        workOrderResponse.setTypeOfWorkOrder(workOrder.getTypeOfWorkOrder());
+        workOrderResponse.setWoDate(workOrder.getWoDate());
+        workOrderResponse.setWoStartDate(workOrder.getWoStartDate());
+        workOrderResponse.setWoEndDate(workOrder.getWoEndDate());
+        workOrderResponse.setPermissionToEnter(workOrder.getPermissionToEnter());
+        return workOrderResponse;
 
-    public AddressResponse getAddressResponse(Address address) {
-        AddressResponse addressResponse = new AddressResponse();
-        addressResponse.setAddressId(address.getId());
-        addressResponse.setLineOne(address.getLineOne());
-        addressResponse.setLineTwo(address.getLineTwo());
-        addressResponse.setCity(address.getCity());
-        addressResponse.setState(address.getState());
-        addressResponse.setZipcode(address.getZipcode());
-        addressResponse.setType(address.getType());
-        return addressResponse;
+
     }
-
 }

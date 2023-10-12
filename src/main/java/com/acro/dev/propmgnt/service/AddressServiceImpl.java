@@ -4,6 +4,7 @@ import com.acro.dev.propmgnt.CommonResponseMapper;
 import com.acro.dev.propmgnt.entity.Address;
 import com.acro.dev.propmgnt.exception.PropertyManagementException;
 import com.acro.dev.propmgnt.repository.AddressRepository;
+import com.acro.dev.propmgnt.repository.OwnerRepository;
 import com.acro.dev.propmgnt.request.AddressRequest;
 import com.acro.dev.propmgnt.response.AddressResponse;
 import org.slf4j.Logger;
@@ -19,31 +20,35 @@ import java.util.Optional;
 
 @Service
 public class AddressServiceImpl implements AddressService {
-    private static final Logger logger= LoggerFactory.getLogger(AddressServiceImpl.class);
-        private final AddressRepository addressRepository;
-         private final CommonResponseMapper commonResponseMapper;
+    private static final Logger logger = LoggerFactory.getLogger(AddressServiceImpl.class);
+    private final AddressRepository addressRepository;
+    private final OwnerRepository ownerRepository;
+    private final CommonResponseMapper commonResponseMapper;
     @Value("${property.allowed.zipcodes}")
     private Long zipCode;
-    public AddressServiceImpl(@Autowired AddressRepository addressRepository, AddressRepository addressRepository1, CommonResponseMapper commonResponseMapper){
+
+    public AddressServiceImpl(@Autowired AddressRepository addressRepository, AddressRepository addressRepository1, OwnerRepository ownerRepository, CommonResponseMapper commonResponseMapper) {
         this.addressRepository = addressRepository;
-        this.commonResponseMapper=commonResponseMapper;
+        this.ownerRepository = ownerRepository;
+        this.commonResponseMapper = commonResponseMapper;
     }
+
     @Transactional
     @Override
     public AddressResponse createAddress(AddressRequest addressRequest) {
         logger.info("Received tenant request {}", addressRequest);
-        Address address=new Address();
+        Address address = new Address();
         address.setLineOne(addressRequest.getLineOne());
         address.setLineTwo(addressRequest.getLineTwo());
         address.setCity(addressRequest.getCity());
         address.setState(addressRequest.getState());
         address.setZipcode(addressRequest.getZipcode());
         address.setType(addressRequest.getType());
-        // tenant.setPropertyId(tenantReq.getPropertyId());
         Address address1 = addressRepository.save(address);   // save model to DB
         logger.info("Saved Successfully");
-        return commonResponseMapper.convertToAddressResponse(address1);      // convert model to response object
-    }
+        return commonResponseMapper.convertToAddressResponse(address1);
+    }// convert model to response object
+
     @Override
     @Transactional
     public AddressResponse updateAddress(Long id, AddressRequest addressRequest) {

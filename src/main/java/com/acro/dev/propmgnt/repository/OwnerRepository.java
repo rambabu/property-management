@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OwnerRepository extends JpaRepository<Owner,Long> {
-  //public List<Owner> findByPropertyId(Long propertyId);
+    public Boolean deleteOwnerById(Long id);
 
 
 
